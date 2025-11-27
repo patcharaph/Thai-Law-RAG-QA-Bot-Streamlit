@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
@@ -46,7 +46,7 @@ QA_PROMPT = ChatPromptTemplate.from_messages(
 
 
 def load_chain_components(persist_dir: Path, model: str, top_k: int):
-    load_dotenv()
+    load_dotenv(find_dotenv(), override=True)
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     vectordb = Chroma(
         persist_directory=str(persist_dir),
@@ -54,7 +54,8 @@ def load_chain_components(persist_dir: Path, model: str, top_k: int):
     )
     retriever = vectordb.as_retriever(search_kwargs={"k": top_k})
 
-    api_key = os.getenv("OPENROUTER_API_KEY")
+    api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
+    
     if not api_key:
         raise EnvironmentError("OPENROUTER_API_KEY is required.")
 
