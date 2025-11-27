@@ -46,7 +46,7 @@ def build_vector_store(
     persist_dir.mkdir(parents=True, exist_ok=True)
     vectordb = Chroma.from_documents(
         documents=chunks,
-        embedding_function=embeddings,
+        embedding=embeddings,
         persist_directory=str(persist_dir),
         collection_name="thai_law",
     )
