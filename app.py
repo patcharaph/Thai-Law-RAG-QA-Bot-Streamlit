@@ -213,47 +213,45 @@ def main() -> None:
         st.error(f"โหลดทรัพยากรไม่สำเร็จ: {exc}")
         return
 
-    col_left, col_center, col_right = st.columns([1, 1.8, 1])
-    with col_center:
-        for msg in st.session_state.messages:
-            st.chat_message(msg["role"]).write(msg["content"])
+    for msg in st.session_state.messages:
+        st.chat_message(msg["role"]).write(msg["content"])
 
-        user_input = st.chat_input("พิมพ์คำถามเกี่ยวกับกฎหมายไทยที่นี่")
-        if not user_input:
-            return
+    user_input = st.chat_input("พิมพ์คำถามเกี่ยวกับกฎหมายไทยที่นี่")
+    if not user_input:
+        return
 
-        st.chat_message("user").write(user_input)
+    st.chat_message("user").write(user_input)
 
-        with st.chat_message("assistant"):
-            with st.spinner("กำลังค้นหาคำตอบ..."):
-                try:
-                    chat_history = to_langchain_history(st.session_state.messages)
-                    condense_msgs = CONDENSE_PROMPT.format_messages(
-                        chat_history=chat_history,
-                        input=user_input,
-                    )
-                    condensed_question = llm.invoke(condense_msgs).content.strip()
+    with st.chat_message("assistant"):
+        with st.spinner("กำลังค้นหาคำตอบ..."):
+            try:
+                chat_history = to_langchain_history(st.session_state.messages)
+                condense_msgs = CONDENSE_PROMPT.format_messages(
+                    chat_history=chat_history,
+                    input=user_input,
+                )
+                condensed_question = llm.invoke(condense_msgs).content.strip()
 
-                    retriever = vectordb.as_retriever(search_kwargs={"k": top_k})
-                    docs = retriever.invoke(condensed_question)
-                    context_text = "\n\n".join(doc.page_content for doc in docs)
+                retriever = vectordb.as_retriever(search_kwargs={"k": top_k})
+                docs = retriever.invoke(condensed_question)
+                context_text = "\n\n".join(doc.page_content for doc in docs)
 
-                    qa_msgs = QA_PROMPT.format_messages(
-                        context=context_text,
-                        input=condensed_question,
-                    )
-                    answer_msg = llm.invoke(qa_msgs)
-                    answer = answer_msg.content.strip()
+                qa_msgs = QA_PROMPT.format_messages(
+                    context=context_text,
+                    input=condensed_question,
+                )
+                answer_msg = llm.invoke(qa_msgs)
+                answer = answer_msg.content.strip()
 
-                    st.write(answer)
-                    if docs:
-                        st.caption("แหล่งอ้างอิง:")
-                        st.markdown(format_docs(docs))
+                st.write(answer)
+                if docs:
+                    st.caption("แหล่งอ้างอิง:")
+                    st.markdown(format_docs(docs))
 
-                    st.session_state.messages.append({"role": "user", "content": user_input})
-                    st.session_state.messages.append({"role": "assistant", "content": answer})
-                except Exception as exc:  # noqa: BLE001
-                    st.error(f"เกิดข้อผิดพลาดระหว่างประมวลผล: {exc}")
+                st.session_state.messages.append({"role": "user", "content": user_input})
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+            except Exception as exc:  # noqa: BLE001
+                st.error(f"เกิดข้อผิดพลาดระหว่างประมวลผล: {exc}")
 
 
 if __name__ == "__main__":
