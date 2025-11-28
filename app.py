@@ -175,7 +175,7 @@ def to_langchain_history(messages: List[dict]) -> List[HumanMessage | AIMessage]
 def main() -> None:
     st.set_page_config(page_title="Thai Law RAG QA", page_icon="⚖️", layout="wide")
     set_cyberpunk_theme()
-    st.title("Thai Law RAG QA (OpenRouter)")
+    st.title("กฎหมายแรงงานไทย Q&A")
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
