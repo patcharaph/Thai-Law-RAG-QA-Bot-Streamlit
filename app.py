@@ -49,6 +49,74 @@ QA_PROMPT = ChatPromptTemplate.from_messages(
 )
 
 
+def set_cyberpunk_theme() -> None:
+    """Inject a simple cyberpunk-inspired theme."""
+    st.markdown(
+        """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+        :root {
+            --neo-pink: #ff2fd0;
+            --neo-cyan: #00f6ff;
+            --neo-yellow: #f2ff49;
+            --panel: rgba(10, 10, 20, 0.75);
+        }
+        body, [data-testid="stAppViewContainer"] {
+            background: radial-gradient(circle at 20% 20%, rgba(0, 246, 255, 0.08), transparent 25%),
+                        radial-gradient(circle at 80% 10%, rgba(255, 47, 208, 0.09), transparent 25%),
+                        linear-gradient(135deg, #0a0b15 0%, #0c1024 55%, #06060d 100%);
+            color: #e8f7ff;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, rgba(12,16,36,0.95), rgba(12,16,36,0.8));
+            border-right: 1px solid rgba(0, 246, 255, 0.35);
+        }
+        h1, h2, h3, .stMarkdown h1, .stMarkdown h2 {
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            color: var(--neo-cyan);
+            text-shadow: 0 0 18px rgba(0, 246, 255, 0.4);
+        }
+        .stButton>button, .stSelectbox>div>div, .stSlider>div>div>div>div {
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+        }
+        .stButton>button {
+            background: linear-gradient(90deg, var(--neo-pink), var(--neo-cyan));
+            color: #0a0b15;
+            border: none;
+            box-shadow: 0 0 12px rgba(0, 246, 255, 0.45), 0 0 20px rgba(255, 47, 208, 0.35);
+        }
+        .stButton>button:hover {
+            filter: brightness(1.08);
+        }
+        .stTextInput>div>div>input, .stSelectbox>div>div>div {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(0, 246, 255, 0.35);
+            color: #e8f7ff !important;
+        }
+        .stSlider [data-baseweb="slider"]>div {
+            background: rgba(255, 47, 208, 0.4);
+        }
+        .stSlider [data-baseweb="slider"]>div>div {
+            background: rgba(0, 246, 255, 0.8);
+        }
+        .stChatMessage {
+            background: var(--panel);
+            border: 1px solid rgba(0, 246, 255, 0.18);
+            box-shadow: 0 0 8px rgba(0, 246, 255, 0.12);
+        }
+        code, pre {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0, 246, 255, 0.25);
+        }
+        a { color: var(--neo-yellow); }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 @st.cache_resource(show_spinner=False)
 def load_vectordb(persist_dir: Path) -> Chroma:
     """Load the persistent Chroma DB once."""
@@ -106,6 +174,7 @@ def to_langchain_history(messages: List[dict]) -> List[HumanMessage | AIMessage]
 
 def main() -> None:
     st.set_page_config(page_title="Thai Law RAG QA", page_icon="⚖️", layout="wide")
+    set_cyberpunk_theme()
     st.title("Thai Law RAG QA (OpenRouter)")
 
     if "messages" not in st.session_state:
