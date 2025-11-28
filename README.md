@@ -56,6 +56,11 @@ python qa.py --persist-dir vectorstore --model openai/gpt-4o-mini
 ```
 หมายเหตุ: สามารถเปลี่ยนโมเดลเป็น `google/gemini-flash-1.5` ได้
 
+## สรุปคำสั่งสำคัญ
+- สร้างฐานข้อมูล: `python build_kb.py --pdf-dir documents --persist-dir vectorstore`
+- รัน CLI: `python qa.py --persist-dir vectorstore --model openai/gpt-4o-mini`
+- รันเว็บแอป Streamlit: `streamlit run app.py`
+
 ## รายละเอียดสำคัญ
 - ฝั่งฝังข้อมูล: ใช้ `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` รองรับภาษาไทยและรันในเครื่อง  
 - การตัดข้อความ: `RecursiveCharacterTextSplitter` ขนาด 1000 ตัวอักษร ซ้อน 200 ตัวอักษร ตัวแบ่ง `["\n\n", "มาตรา", "\n", " ", ""]`  
