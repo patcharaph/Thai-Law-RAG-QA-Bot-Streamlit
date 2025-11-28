@@ -126,7 +126,7 @@ def main() -> None:
         )
         if st.button("Clear Chat", type="secondary"):
             st.session_state.messages = []
-            st.experimental_rerun()
+            st.rerun()
 
     api_key = ensure_api_key()
     if not api_key:
